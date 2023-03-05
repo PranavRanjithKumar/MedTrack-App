@@ -11,6 +11,7 @@ const useInput = () => {
   const isInValid = !notEmpty(value) && touched;
 
   const onChangeText = (inputValue) => {
+    setTouched(true);
     setValue(inputValue);
   };
 

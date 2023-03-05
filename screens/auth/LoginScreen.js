@@ -6,8 +6,12 @@ import {
   TextInput,
   Pressable,
 } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import useInput from '../../hooks/useInput';
+import { login } from '../../apis/auth';
+import { AuthContext } from '../../store/auth-context';
+import ErrorToast from '../../components/errorToast';
 
 const getForm = (...inputStates) => {
   const formIsValid = inputStates.reduce(
@@ -25,6 +29,7 @@ const getForm = (...inputStates) => {
 };
 
 const LoginScreen = () => {
+  const { authenticate, setUser } = useContext(AuthContext);
   const [emailInputStates, emailProps] = useInput();
   const [passwordInputStates, passwordProps] = useInput();
 
@@ -33,10 +38,32 @@ const LoginScreen = () => {
     passwordInputStates
   );
 
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      authenticate(data.token, data.refreshToken);
+      setUser(data.data.user);
+      formReset();
+    },
+  });
+
+  const loginSubmitHandler = () => {
+    loginMutation.mutate({
+      email: emailProps.value,
+      password: passwordProps.value,
+    });
+  };
+
   return (
     <SafeAreaView style={styles.root}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Getting started</Text>
+      </View>
+
+      <View>
+        {loginMutation.isError && (
+          <ErrorToast message={loginMutation.error.message} />
+        )}
       </View>
 
       <View style={styles.loginView}>
@@ -77,7 +104,8 @@ const LoginScreen = () => {
 
       <View style={styles.loginButtonContainer}>
         <Pressable
-          disabled={!formIsValid}
+          disabled={!formIsValid || loginMutation.isLoading}
+          onPress={loginSubmitHandler}
           style={[
             styles.loginButton,
             formIsValid ? styles.loginButtonValid : styles.loginButtonInvalid,
@@ -106,6 +134,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginTop: 20,
+    marginBottom: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -115,7 +144,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   loginView: {
-    marginTop: 72,
+    marginTop: 70,
   },
   loginHeader: {
     fontFamily: 'ibmPlex600',
