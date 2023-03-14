@@ -1,6 +1,6 @@
-import axiosClient from './apiClient';
+import axiosClient from './axiosClient';
 
-export const login = async (email, password) => {
+const login = async (email, password) => {
   try {
     const response = await axiosClient.post('/users/login', email, password);
     return response.data;
@@ -8,3 +8,5 @@ export const login = async (email, password) => {
     throw new Error(e.response.data.message);
   }
 };
+
+export default login;

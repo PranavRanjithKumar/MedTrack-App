@@ -10,7 +10,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LoginScreen from './screens/auth/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import AuthContextProvider, { AuthContext } from './store/auth-context';
-import useAxiosInterceptors from './apis/interceptorSetup';
+import WithAxios from './apis/withAxios';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -67,8 +67,6 @@ const AuthenticatedStack = () => {
 };
 
 const App = () => {
-  useAxiosInterceptors();
-
   const [fetchingTokens, setFetchingTokens] = useState(true);
 
   const { authenticate, logout, isAuthenticated } = useContext(AuthContext);
@@ -129,7 +127,9 @@ const Root = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthContextProvider>
-        <App />
+        <WithAxios>
+          <App />
+        </WithAxios>
       </AuthContextProvider>
     </QueryClientProvider>
   );
