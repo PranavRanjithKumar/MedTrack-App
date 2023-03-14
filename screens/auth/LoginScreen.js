@@ -9,7 +9,7 @@ import {
 import React, { useContext } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import useInput from '../../hooks/useInput';
-import { login } from '../../apis/auth';
+import login from '../../apis/auth';
 import { AuthContext } from '../../store/auth-context';
 import ErrorToast from '../../components/errorToast';
 
@@ -49,7 +49,7 @@ const LoginScreen = () => {
 
   const loginSubmitHandler = () => {
     loginMutation.mutate({
-      email: emailProps.value,
+      email: emailProps.value.trim(),
       password: passwordProps.value,
     });
   };
@@ -106,8 +106,9 @@ const LoginScreen = () => {
         <Pressable
           disabled={!formIsValid || loginMutation.isLoading}
           onPress={loginSubmitHandler}
-          style={[
+          style={({ pressed }) => [
             styles.loginButton,
+            pressed && styles.pressed,
             formIsValid ? styles.loginButtonValid : styles.loginButtonInvalid,
           ]}
         >
@@ -137,6 +138,9 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  pressed: {
+    opacity: 0.7,
   },
   headerText: {
     fontFamily: 'roboto500',
