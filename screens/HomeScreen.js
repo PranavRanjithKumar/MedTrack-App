@@ -4,7 +4,6 @@ import {
   View,
   StyleSheet,
   Button,
-  TextInput,
   ActivityIndicator,
 } from 'react-native';
 import React, { useContext } from 'react';
@@ -13,6 +12,7 @@ import { AuthContext } from '../store/auth-context';
 import useFilteredData from '../hooks/useFilteredData';
 import getRequestableOrganizations from '../apis/requests';
 import ItemsList from '../components/ItemsList';
+import SearchInput from '../components/SearchInput';
 
 const HomeScreen = () => {
   const { logout } = useContext(AuthContext);
@@ -30,12 +30,9 @@ const HomeScreen = () => {
           <Text style={styles.headline}>Categories</Text>
         </View>
         <View>
-          <TextInput
-            placeholder={`Search for "Cipla"`}
-            placeholderTextColor="#AAAAAA"
-            cursorColor="black"
-            style={styles.searchInput}
+          <SearchInput
             onChangeText={onChangeText}
+            placeholderText={`Search for "Cipla"`}
           />
         </View>
       </View>
