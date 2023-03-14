@@ -20,12 +20,6 @@
     // prevent eslint to complain about the "styles" variable being used before it was defined
     "no-use-before-define": ["error", { "variables": false }],
 
-    // ignore errors for the react-navigation package
-    "react/prop-types": [
-      "error",
-      { "ignore": ["navigation", "navigation.navigate"] }
-    ],
-
     "react/function-component-definition": [
       1,
       {
@@ -35,6 +29,7 @@
 
     "react/jsx-props-no-spreading": 0,
     "arrow-body-style": "off",
+    "react/prop-types": 0,
     "no-restricted-syntax": "off"
   }
 }
