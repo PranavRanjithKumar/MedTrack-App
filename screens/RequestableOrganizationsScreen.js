@@ -14,7 +14,7 @@ import getRequestableOrganizations from '../apis/requests';
 import ItemsList from '../components/ItemsList';
 import SearchInput from '../components/SearchInput';
 
-const HomeScreen = () => {
+const RequestableOrganizationsScreen = () => {
   const { logout } = useContext(AuthContext);
 
   const { filteredData, onChangeText, isLoading } = useFilteredData(
@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
   },
   organizationList: {
     flex: 1,
-    paddingHorizontal: 22,
     backgroundColor: 'white',
   },
   loadingOrNoData: {
@@ -100,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default RequestableOrganizationsScreen;

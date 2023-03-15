@@ -2,19 +2,21 @@
 import React, { useCallback, useContext, useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LoginScreen from './screens/auth/LoginScreen';
-import HomeScreen from './screens/HomeScreen';
+import RequestableOrganizationsScreen from './screens/RequestableOrganizationsScreen';
 import AuthContextProvider, { AuthContext } from './store/auth-context';
 import WithAxios from './apis/withAxios';
 
 SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
+const Bottom = createBottomTabNavigator();
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,24 @@ const refreshTokenIsValid = (refreshToken) => {
     return false;
   }
   return true;
+};
+
+const RequestStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        contentStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+      }}
+    >
+      <Stack.Screen
+        name="RequestableOrganizations"
+        component={RequestableOrganizationsScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
 };
 
 const AuthStack = () => {
@@ -50,19 +70,36 @@ const AuthStack = () => {
 
 const AuthenticatedStack = () => {
   return (
-    <Stack.Navigator
+    <Bottom.Navigator
       screenOptions={{
         contentStyle: {
           backgroundColor: '#FFFFFF',
         },
       }}
     >
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
+      <Bottom.Screen
+        name="Requests"
+        component={RequestStack}
+        options={{
+          headerShown: false,
+          tabBarLabelStyle: {
+            fontSize: 14,
+            fontFamily: 'roboto500',
+          },
+        }}
       />
-    </Stack.Navigator>
+      <Bottom.Screen
+        name="Transfers"
+        component={RequestStack}
+        options={{
+          headerShown: false,
+          tabBarLabelStyle: {
+            fontSize: 14,
+            fontFamily: 'roboto500',
+          },
+        }}
+      />
+    </Bottom.Navigator>
   );
 };
 
