@@ -1,14 +1,29 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { MapPinIcon } from 'react-native-heroicons/solid';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import LogoImage from './LogoImage';
 
-const OrganizationItem = ({ name, address, city, state }) => {
+const OrganizationItem = ({ _id, name, address, city, state }) => {
+  const navigation = useNavigation();
+
   return (
-    <TouchableOpacity style={styles.organizationContainer}>
+    <TouchableOpacity
+      style={styles.organizationContainer}
+      onPress={() =>
+        navigation.navigate('RequestDrugs', {
+          _id,
+          name,
+          address,
+          city,
+          state,
+        })
+      }
+    >
       <View style={styles.contentContainer}>
-        <View style={styles.imageContainer}>
+        <LogoImage>
           <Image source={require('../assets/organizationLogo.png')} />
-        </View>
+        </LogoImage>
         <View style={styles.textContainer}>
           <Text style={styles.organizationTitle}>{name}</Text>
           <View style={styles.addressContainer}>
@@ -31,15 +46,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexDirection: 'row',
-  },
-  imageContainer: {
-    backgroundColor: '#9B51E0',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 9999,
-    height: 40,
-    width: 40,
-    marginRight: 8,
   },
   textContainer: {
     justifyContent: 'space-between',
