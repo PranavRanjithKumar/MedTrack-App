@@ -42,8 +42,7 @@ const LoginScreen = () => {
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      authenticate(data.token, data.refreshToken);
-      setUser(data.data.user);
+      authenticate(data.token, data.refreshToken, data.data.user);
       formReset();
     },
     onError: () => {

@@ -6,7 +6,7 @@ export const AuthContext = createContext({
   refreshToken: '',
   user: {},
   isAuthenticated: false,
-  authenticate: (authToken, refreshToken) => {},
+  authenticate: (authToken, refreshToken, user) => {},
   setUser: (user) => {},
   relogin: (authToken) => {},
   logout: () => {},
@@ -18,12 +18,6 @@ function reducer(state, action) {
       return {
         authToken: action.payload.authToken,
         refreshToken: action.payload.refreshToken,
-        user: state.user,
-      };
-    case 'set-user':
-      return {
-        authToken: state.authToken,
-        refreshToken: state.refreshToken,
         user: action.payload.user,
       };
     case 'refresh-authToken':
@@ -51,20 +45,14 @@ const AuthContextProvider = ({ children }) => {
     user: {},
   });
 
-  function authenticate(authToken, refreshToken) {
+  function authenticate(authToken, refreshToken, user) {
     dispatch({
       type: 'set-tokens',
-      payload: { authToken, refreshToken },
+      payload: { authToken, refreshToken, user },
     });
     SecureStore.setItemAsync('authToken', authToken);
     SecureStore.setItemAsync('refreshToken', refreshToken);
-  }
-
-  function setUser(user) {
-    dispatch({
-      type: 'set-user',
-      payload: { user },
-    });
+    SecureStore.setItemAsync('user', JSON.stringify(user));
   }
 
   function relogin(authToken) {
@@ -79,6 +67,7 @@ const AuthContextProvider = ({ children }) => {
     dispatch({ type: 'clear-tokens' });
     SecureStore.deleteItemAsync('authToken');
     SecureStore.deleteItemAsync('refreshToken');
+    SecureStore.deleteItemAsync('user');
   }
 
   const value = useMemo(
@@ -88,7 +77,6 @@ const AuthContextProvider = ({ children }) => {
       user: state.user,
       isAuthenticated: !!state.refreshToken,
       authenticate,
-      setUser,
       relogin,
       logout,
     }),

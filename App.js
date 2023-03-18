@@ -141,10 +141,11 @@ const App = () => {
     async function fetchToken() {
       const authToken = await SecureStore.getItemAsync('authToken');
       const refreshToken = await SecureStore.getItemAsync('refreshToken');
+      const userObject = JSON.parse(await SecureStore.getItemAsync('user'));
 
-      if (authToken && refreshToken) {
+      if (authToken && refreshToken && userObject) {
         if (refreshTokenIsValid(refreshToken)) {
-          authenticate(authToken, refreshToken);
+          authenticate(authToken, refreshToken, userObject);
         } else {
           logout();
         }
