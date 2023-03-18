@@ -1,15 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, Image, Pressable } from 'react-native';
 
-const errorToast = ({ message }) => {
+const errorToast = ({ message, onPress }) => {
   return (
-    <View style={styles.error}>
+    <Pressable onPress={onPress} style={styles.error}>
       <Image
         style={styles.errorImage}
         source={require('../assets/error.png')}
       />
       <Text style={styles.errorText}>{message}</Text>
-    </View>
+    </Pressable>
   );
 };
 
@@ -18,9 +18,10 @@ export default errorToast;
 const styles = StyleSheet.create({
   error: {
     position: 'absolute',
-    top: 0,
+    bottom: 40,
     left: 0,
     width: '100%',
+    marginHorizontal: 22,
     textAlign: 'center',
     backgroundColor: '#C9594B',
     paddingHorizontal: 10,
@@ -29,7 +30,8 @@ const styles = StyleSheet.create({
     borderColor: '#C9594B',
     borderRadius: 8,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    flex: 1,
+    // justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   errorText: {
