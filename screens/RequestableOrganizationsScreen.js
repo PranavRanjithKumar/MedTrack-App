@@ -10,7 +10,7 @@ import React, { useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../store/auth-context';
 import useFilteredData from '../hooks/useFilteredData';
-import getRequestableOrganizations from '../apis/requests';
+import { getRequestableOrganizations } from '../apis/requests';
 import ItemsList from '../components/ItemsList';
 import SearchInput from '../components/SearchInput';
 
@@ -27,7 +27,7 @@ const RequestableOrganizationsScreen = () => {
     <SafeAreaView style={styles.root}>
       <View style={styles.header}>
         <View style={styles.headlineContainer}>
-          <Text style={styles.headline}>Categories</Text>
+          <Text style={styles.headline}>Companies</Text>
         </View>
         <View>
           <SearchInput
@@ -53,7 +53,7 @@ const RequestableOrganizationsScreen = () => {
         ) : filteredData.length === 0 ? (
           <Text>No Organizations found...</Text>
         ) : (
-          <ItemsList data={filteredData} />
+          <ItemsList id="_id" data={filteredData} component="organization" />
         )}
       </View>
     </SafeAreaView>
@@ -77,17 +77,6 @@ const styles = StyleSheet.create({
   headline: {
     fontFamily: 'roboto500',
     fontSize: 20,
-  },
-  searchInput: {
-    borderColor: '#CFCFCF',
-    borderWidth: 1,
-    fontSize: 16,
-    borderRadius: 10,
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    marginBottom: 10,
-    fontFamily: 'roboto400',
-    backgroundColor: 'white',
   },
   organizationList: {
     flex: 1,
