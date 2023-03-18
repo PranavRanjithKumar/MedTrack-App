@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Provider } from 'react-redux';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SecureStore from 'expo-secure-store';
@@ -12,6 +13,9 @@ import LoginScreen from './screens/auth/LoginScreen';
 import RequestableOrganizationsScreen from './screens/RequestableOrganizationsScreen';
 import AuthContextProvider, { AuthContext } from './store/auth-context';
 import WithAxios from './apis/withAxios';
+import RequestDrugsScreen from './screens/RequestDrugsScreen';
+import store from './store/redux-store';
+import ConfirmRequestScreen from './screens/ConfirmRequestScreen';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -44,6 +48,16 @@ const RequestStack = () => {
       <Stack.Screen
         name="RequestableOrganizations"
         component={RequestableOrganizationsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RequestDrugs"
+        component={RequestDrugsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ConfirmRequest"
+        component={ConfirmRequestScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
@@ -164,9 +178,11 @@ const Root = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthContextProvider>
-        <WithAxios>
-          <App />
-        </WithAxios>
+        <Provider store={store}>
+          <WithAxios>
+            <App />
+          </WithAxios>
+        </Provider>
       </AuthContextProvider>
     </QueryClientProvider>
   );
