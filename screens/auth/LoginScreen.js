@@ -6,7 +6,7 @@ import {
   TextInput,
   Pressable,
 } from 'react-native';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import useInput from '../../hooks/useInput';
 import login from '../../apis/auth';
@@ -32,6 +32,7 @@ const LoginScreen = () => {
   const { authenticate, setUser } = useContext(AuthContext);
   const [emailInputStates, emailProps] = useInput();
   const [passwordInputStates, passwordProps] = useInput();
+  const [errorVisibility, setErrorVisibility] = useState(true);
 
   const { formIsValid, formReset } = getForm(
     emailInputStates,
@@ -44,6 +45,9 @@ const LoginScreen = () => {
       authenticate(data.token, data.refreshToken);
       setUser(data.data.user);
       formReset();
+    },
+    onError: () => {
+      setErrorVisibility(true);
     },
   });
 
@@ -60,11 +64,12 @@ const LoginScreen = () => {
         <Text style={styles.headerText}>Getting started</Text>
       </View>
 
-      <View>
-        {loginMutation.isError && (
-          <ErrorToast message={loginMutation.error.message} />
-        )}
-      </View>
+      {loginMutation.isError && errorVisibility && (
+        <ErrorToast
+          onPress={() => setErrorVisibility(false)}
+          message={loginMutation.error.message}
+        />
+      )}
 
       <View style={styles.loginView}>
         <Text style={styles.loginHeader}>Log In</Text>
