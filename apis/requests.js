@@ -1,6 +1,6 @@
 import axiosClient from './axiosClient';
 
-const getRequestableOrganizations = async () => {
+export const getRequestableOrganizations = async () => {
   try {
     const response = await axiosClient.get('/organizations/requestable-orgs');
     return response.data;
@@ -9,4 +9,11 @@ const getRequestableOrganizations = async () => {
   }
 };
 
-export default getRequestableOrganizations;
+export const getCatalogueForOrganization = async (id) => {
+  try {
+    const response = await axiosClient.get(`/organizations/${id}/catalogue`);
+    return response.data;
+  } catch (e) {
+    throw new Error(e.response.data.message);
+  }
+};
