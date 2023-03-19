@@ -10,12 +10,15 @@ import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LoginScreen from './screens/auth/LoginScreen';
-import RequestableOrganizationsScreen from './screens/RequestableOrganizationsScreen';
+import RequestableOrganizationsScreen from './screens/Requesting/RequestableOrganizationsScreen';
 import AuthContextProvider, { AuthContext } from './store/auth-context';
 import WithAxios from './apis/withAxios';
-import RequestDrugsScreen from './screens/RequestDrugsScreen';
+import RequestDrugsScreen from './screens/Requesting/RequestDrugsScreen';
 import store from './store/redux-store';
-import ConfirmRequestScreen from './screens/ConfirmRequestScreen';
+import ConfirmRequestScreen from './screens/Requesting/ConfirmRequestScreen';
+import MyCatalogueScreen from './screens/Creating/MyCatalogueScreen';
+import AssetCreationScreen from './screens/Creating/AssetCreationScreen';
+import AddCompositionScreen from './screens/Creating/AddCompositionScreen';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -64,6 +67,34 @@ const RequestStack = () => {
   );
 };
 
+const CreateStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        contentStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+      }}
+    >
+      <Stack.Screen
+        name="My Catalogue"
+        component={MyCatalogueScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Asset Form"
+        component={AssetCreationScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Add Composition"
+        component={AddCompositionScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const AuthStack = () => {
   return (
     <Stack.Navigator
@@ -89,6 +120,7 @@ const AuthenticatedStack = () => {
         contentStyle: {
           backgroundColor: '#FFFFFF',
         },
+        tabBarHideOnKeyboard: true,
       }}
     >
       <Bottom.Screen
@@ -103,8 +135,8 @@ const AuthenticatedStack = () => {
         }}
       />
       <Bottom.Screen
-        name="Transfers"
-        component={RequestStack}
+        name="Assets"
+        component={CreateStack}
         options={{
           headerShown: false,
           tabBarLabelStyle: {
