@@ -6,7 +6,7 @@ const errorToast = ({ message, onPress }) => {
     <Pressable onPress={onPress} style={styles.error}>
       <Image
         style={styles.errorImage}
-        source={require('../assets/error.png')}
+        source={require('../../assets/error.png')}
       />
       <Text style={styles.errorText}>{message}</Text>
     </Pressable>

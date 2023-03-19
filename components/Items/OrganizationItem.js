@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { MapPinIcon } from 'react-native-heroicons/solid';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import LogoImage from './LogoImage';
+import LogoImage from '../UI/LogoImage';
 
 const OrganizationItem = ({ _id, name, address, city, state }) => {
   const navigation = useNavigation();
@@ -22,7 +22,7 @@ const OrganizationItem = ({ _id, name, address, city, state }) => {
     >
       <View style={styles.contentContainer}>
         <LogoImage>
-          <Image source={require('../assets/organizationLogo.png')} />
+          <Image source={require('../../assets/organizationLogo.png')} />
         </LogoImage>
         <View style={styles.textContainer}>
           <Text style={styles.organizationTitle}>{name}</Text>

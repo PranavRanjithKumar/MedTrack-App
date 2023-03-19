@@ -1,10 +1,21 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
-import GoBackButton from '../components/GoBackButton';
-import ItemsList from '../components/ItemsList';
-import { selectBasketItems } from '../features/requests/requestDrugCartSlice';
+import * as Location from 'expo-location';
+import GoBackButton from '../../components/UI/GoBackButton';
+import ItemsList from '../../components/Items/ItemsList';
+import { selectBasketItems } from '../../features/requests/requestDrugCartSlice';
+
+const getLocation = async () => {
+  const { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== 'granted') {
+    console.log('Permission to access location was denied');
+    return;
+  }
+  const location = await Location.getCurrentPositionAsync({ accuracy: 5 });
+  console.log(location);
+};
 
 const ConfirmRequestScreen = () => {
   const items = useSelector(selectBasketItems);
@@ -13,7 +24,7 @@ const ConfirmRequestScreen = () => {
       <GoBackButton custom={styles.goBackButton} />
       <Text style={styles.headline}>Confirm Request</Text>
       <ItemsList id="catalogueId" data={items} component="cartItem" />
-      <TouchableOpacity style={styles.confirmButton}>
+      <TouchableOpacity style={styles.confirmButton} onPress={getLocation}>
         <Text style={styles.buttonText}>Place Request</Text>
       </TouchableOpacity>
     </SafeAreaView>

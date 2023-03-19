@@ -7,14 +7,14 @@ import {
   removeFromBasket,
   selectBasketItemCountForId,
   selectCartItemsQuantity,
-} from '../features/requests/requestDrugCartSlice';
+} from '../../features/requests/requestDrugCartSlice';
 import {
   selectOrganization,
   setOrganization,
   unsetOrganization,
-} from '../features/requests/requestOrganizationSlice';
+} from '../../features/requests/requestOrganizationSlice';
 
-const CatalogueItem = ({
+const CatalogueCartItem = ({
   code,
   drug,
   unitQuantity,
@@ -85,7 +85,7 @@ const CatalogueItem = ({
   );
 };
 
-export default CatalogueItem;
+export default CatalogueCartItem;
 
 const styles = StyleSheet.create({
   catalogueContainer: {

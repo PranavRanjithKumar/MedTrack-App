@@ -11,13 +11,13 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeftIcon } from 'react-native-heroicons/solid';
 import { useSelector } from 'react-redux';
-import SearchInput from '../components/SearchInput';
-import { getCatalogueForOrganization } from '../apis/requests';
-import useFilteredData from '../hooks/useFilteredData';
-import LogoImage from '../components/LogoImage';
-import ItemsList from '../components/ItemsList';
-import { selectCartItemsQuantity } from '../features/requests/requestDrugCartSlice';
-import ErrorToast from '../components/errorToast';
+import SearchInput from '../../components/UI/SearchInput';
+import { getCatalogueForOrganization } from '../../apis/requests';
+import useFilteredData from '../../hooks/useFilteredData';
+import LogoImage from '../../components/UI/LogoImage';
+import ItemsList from '../../components/Items/ItemsList';
+import { selectCartItemsQuantity } from '../../features/requests/requestDrugCartSlice';
+import ErrorToast from '../../components/UI/errorToast';
 
 const RequestDrugsScreen = ({ navigation, route }) => {
   const organization = route.params;
@@ -27,7 +27,7 @@ const RequestDrugsScreen = ({ navigation, route }) => {
   const [errorVisibility, setErrorVisibility] = useState(false);
 
   const { filteredData, onChangeText, isLoading } = useFilteredData(
-    ['Request_drugs_catalogue'],
+    ['Request_drugs_catalogue', organization._id],
     () => getCatalogueForOrganization(organization._id),
     'drug',
     'name'
@@ -51,7 +51,7 @@ const RequestDrugsScreen = ({ navigation, route }) => {
             <ArrowLeftIcon color="#000000" size={22} />
           </TouchableOpacity>
           <LogoImage>
-            <Image source={require('../assets/organizationLogo.png')} />
+            <Image source={require('../../assets/organizationLogo.png')} />
           </LogoImage>
 
           <Text style={styles.headline} numberOfLines={1} ellipsizeMode="tail">
@@ -80,7 +80,7 @@ const RequestDrugsScreen = ({ navigation, route }) => {
             id="_id"
             data={filteredData}
             setError={setErrorVisibility}
-            component="catalogue"
+            component="catalogueCart"
           />
         )}
       </View>

@@ -1,64 +1,54 @@
 /* eslint-disable no-nested-ternary */
-import {
-  Text,
-  View,
-  StyleSheet,
-  Button,
-  ActivityIndicator,
-} from 'react-native';
 import React, { useContext } from 'react';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AuthContext } from '../store/auth-context';
-import useFilteredData from '../hooks/useFilteredData';
-import { getRequestableOrganizations } from '../apis/requests';
-import ItemsList from '../components/ItemsList';
-import SearchInput from '../components/SearchInput';
+import SearchInput from '../../components/UI/SearchInput';
+import ItemsList from '../../components/Items/ItemsList';
+import useFilteredData from '../../hooks/useFilteredData';
+import { AuthContext } from '../../store/auth-context';
+import { getUnfulfilledTransfers } from '../../apis/requests';
 
-const RequestableOrganizationsScreen = () => {
-  const { logout } = useContext(AuthContext);
+const AddCompositionScreen = () => {
+  const { user } = useContext(AuthContext);
 
   const { filteredData, onChangeText, isLoading } = useFilteredData(
-    ['Requestable_Organizations'],
-    getRequestableOrganizations,
-    'name'
+    ['UnfulfilledTransfers', user.organization._id],
+    () => getUnfulfilledTransfers(user.organization._id),
+    'id'
   );
 
   return (
     <SafeAreaView style={styles.root}>
       <View style={styles.header}>
         <View style={styles.headlineContainer}>
-          <Text style={styles.headline}>Companies</Text>
+          <Text style={styles.headline}>Add Composition</Text>
         </View>
         <View>
           <SearchInput
             onChangeText={onChangeText}
-            placeholderText={`Search for "Cipla"`}
+            placeholderText={`Search Catalogue Code: "XYZ-1000"`}
           />
         </View>
       </View>
-      <Button
-        onPress={logout}
-        title="Logout"
-        color="#841584"
-        accessibilityLabel="Learn more about this purple button"
-      />
       <View
         style={[
-          styles.organizationList,
+          styles.catalogueList,
           (isLoading || filteredData.length === 0) && styles.loadingOrNoData,
         ]}
       >
         {isLoading ? (
           <ActivityIndicator />
         ) : filteredData.length === 0 ? (
-          <Text>No Organizations found...</Text>
+          <Text>No Items are in the catalogue...</Text>
         ) : (
-          <ItemsList id="_id" data={filteredData} component="organization" />
+          <ItemsList id="id" data={filteredData} component="transfer" />
         )}
       </View>
     </SafeAreaView>
   );
 };
+
+export default AddCompositionScreen;
 
 const styles = StyleSheet.create({
   root: {
@@ -71,14 +61,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
   headlineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
     marginBottom: 25,
   },
   headline: {
+    flex: 1,
     fontFamily: 'roboto500',
     fontSize: 20,
   },
-  organizationList: {
+
+  catalogueList: {
     flex: 1,
     backgroundColor: 'white',
   },
@@ -87,5 +81,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-export default RequestableOrganizationsScreen;
