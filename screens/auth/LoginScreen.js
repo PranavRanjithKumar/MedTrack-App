@@ -11,7 +11,7 @@ import { useMutation } from '@tanstack/react-query';
 import useInput from '../../hooks/useInput';
 import login from '../../apis/auth';
 import { AuthContext } from '../../store/auth-context';
-import ErrorToast from '../../components/errorToast';
+import ErrorToast from '../../components/UI/errorToast';
 
 const getForm = (...inputStates) => {
   const formIsValid = inputStates.reduce(
@@ -29,7 +29,7 @@ const getForm = (...inputStates) => {
 };
 
 const LoginScreen = () => {
-  const { authenticate, setUser } = useContext(AuthContext);
+  const { authenticate } = useContext(AuthContext);
   const [emailInputStates, emailProps] = useInput();
   const [passwordInputStates, passwordProps] = useInput();
   const [errorVisibility, setErrorVisibility] = useState(true);
