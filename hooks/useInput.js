@@ -1,14 +1,17 @@
 import { useState } from 'react';
 
-const useInput = () => {
-  const [value, setValue] = useState('');
+const useInput = (initialState, validationFns) => {
+  const [value, setValue] = useState(initialState);
   const [isFocus, setIsFocus] = useState(false);
   const [touched, setTouched] = useState(false);
 
-  const notEmpty = (val) => val.trim().length !== 0;
+  const inputIsValid = (val) =>
+    validationFns.reduce((isValid, validationFunction) => {
+      return isValid && validationFunction(val);
+    }, true);
 
-  const isValid = notEmpty(value) && touched;
-  const isInValid = !notEmpty(value) && touched;
+  const isValid = inputIsValid(value) && touched;
+  const isInValid = !inputIsValid(value) && touched;
 
   const onChangeText = (inputValue) => {
     setTouched(true);
