@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 40,
     left: 0,
-    width: '100%',
+    minWidth: '85%',
     marginHorizontal: 22,
     textAlign: 'center',
     backgroundColor: '#C9594B',
