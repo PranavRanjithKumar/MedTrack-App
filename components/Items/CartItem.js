@@ -23,7 +23,7 @@ const CartItem = ({
             >{`${unitQuantity} ${unitQuantityType}`}</Text>
           </Text>
         </View>
-        <View style={styles.buttonsContainer}>
+        <View style={styles.countContainer}>
           <Text style={styles.count}>{quantity}</Text>
         </View>
       </View>
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   code: {
     fontFamily: 'roboto500',
   },
-  buttonsContainer: {
+  countContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

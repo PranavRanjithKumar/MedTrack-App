@@ -1,30 +1,74 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import {
+  MapPinIcon,
+  CalendarDaysIcon,
+  BuildingOffice2Icon,
+} from 'react-native-heroicons/solid';
+import formatDate from '../../features/dateFormatter';
 
-const TransferItem = ({ id, requestedDate, requestingOrgId }) => {
+const TransferItem = ({
+  id,
+  requestedDate,
+  requestingOrgId,
+  requestedItems,
+  componentType,
+  ...otherProps
+}) => {
+  const RequestedDate = new Date(requestedDate);
+  const requestedDateFormatted = formatDate(RequestedDate);
+
+  const navigation = useNavigation();
+
+  let moveToNextScreen;
+
+  if (componentType === 'makeTransfer')
+    moveToNextScreen = () => {
+      navigation.navigate('Requested Items', { id, requestedItems });
+    };
+  else
+    moveToNextScreen = () => {
+      navigation.navigate('Request Info', {
+        id,
+        requestingOrgId,
+        requestedDate,
+        requestedItems,
+        ...otherProps,
+      });
+    };
+
   return (
-    <View style={styles.catalogueContainer}>
+    <TouchableOpacity
+      style={styles.catalogueContainer}
+      onPress={moveToNextScreen}
+    >
       <View style={styles.container}>
         <View style={styles.contentContainer}>
-          <Text style={styles.drugName}>{id}</Text>
-          <Text style={styles.codeHeader}>
-            Requested Date: <Text style={styles.code}>{requestedDate}</Text>
-          </Text>
-          <Text style={styles.codeHeader}>
-            Requesting Organization:{' '}
-            <Text style={styles.code}>{requestingOrgId.name}</Text>
-          </Text>
+          <Text style={styles.idStyle}>{id}</Text>
+          <View style={styles.detailsItem}>
+            <CalendarDaysIcon color="#808080" size={20} />
+            <Text style={{ marginLeft: 4 }}>{requestedDateFormatted}</Text>
+          </View>
+          <View style={styles.detailsItem}>
+            <BuildingOffice2Icon color="#808080" size={20} />
+            <Text style={{ marginLeft: 4 }}>
+              {componentType === 'requestInfo'
+                ? otherProps.transferringOrgId.name
+                : requestingOrgId.name}
+            </Text>
+          </View>
+          <View style={styles.detailsItem}>
+            <MapPinIcon color="#808080" size={20} />
+            <Text style={{ marginLeft: 4 }}>
+              {componentType === 'requestInfo'
+                ? `${otherProps.transferringOrgId.address}, ${otherProps.transferringOrgId.city}, ${otherProps.transferringOrgId.state}`
+                : `${requestingOrgId.address}, ${requestingOrgId.city}, ${requestingOrgId.state}`}
+            </Text>
+          </View>
         </View>
-        {/* <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            style={styles.icon}
-            onPress={moveToAssetCreationPage}
-          >
-            <PlusIcon color="#FFFFFF" size={16} />
-          </TouchableOpacity>
-        </View> */}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -47,21 +91,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 4,
   },
-  codeHeader: {
-    fontFamily: 'roboto400',
+  idStyle: {
+    fontFamily: 'roboto500',
+    fontSize: 15,
     marginBottom: 4,
   },
-  code: {
-    fontFamily: 'roboto500',
-  },
-  buttonsContainer: {
+  detailsItem: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-  },
-  icon: {
-    padding: 10,
-    backgroundColor: '#000000',
-    borderRadius: 999,
+    marginBottom: 4,
   },
 });

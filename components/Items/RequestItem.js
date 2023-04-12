@@ -1,45 +1,20 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import {
-  selectBasketItemCountForId,
-  selectCartItemsQuantity,
-} from '../../features/requests/requestDrugCartSlice';
-import { selectOrganization } from '../../features/requests/requestOrganizationSlice';
 
-const CatalogueCartItem = ({
-  code,
-  drug,
-  unitQuantity,
-  unitQuantityType,
-  organization,
-  setError,
+const RequestItem = ({
+  quantity,
+  catalogueId: { drug, code, unitQuantity, unitQuantityType },
 }) => {
-  const curItemCount = useSelector((state) =>
-    selectBasketItemCountForId(state, code)
-  );
-
-  const curOrganization = useSelector(selectOrganization);
-  const cartItemsQuantity = useSelector(selectCartItemsQuantity);
-
   const navigation = useNavigation();
 
-  const moveToQuantitySelectionScreen = () => {
-    if (cartItemsQuantity === 0 || curOrganization.id === organization._id)
-      return navigation.navigate('Add request quantity', {
-        code,
-        drug,
-        unitQuantity,
-        organization,
-        unitQuantityType,
-      });
-    return setError(true);
+  const moveToAssetSelectionScreen = () => {
+    navigation.navigate('View In House Assets', code);
   };
 
   return (
     <TouchableOpacity
-      onPress={moveToQuantitySelectionScreen}
+      onPress={moveToAssetSelectionScreen}
       style={styles.catalogueContainer}
     >
       <View style={styles.container}>
@@ -49,9 +24,6 @@ const CatalogueCartItem = ({
             Catalogue Code: <Text style={styles.code}>{code}</Text>
           </Text>
           <Text style={styles.codeHeader}>
-            Drug Code: <Text style={styles.code}>{drug.code}</Text>
-          </Text>
-          <Text style={styles.codeHeader}>
             Quanity Per Unit:
             <Text
               style={styles.code}
@@ -59,14 +31,14 @@ const CatalogueCartItem = ({
           </Text>
         </View>
         <View style={styles.buttonsContainer}>
-          <Text style={styles.count}>{curItemCount}</Text>
+          <Text style={styles.count}>{quantity}</Text>
         </View>
       </View>
     </TouchableOpacity>
   );
 };
 
-export default CatalogueCartItem;
+export default RequestItem;
 
 const styles = StyleSheet.create({
   catalogueContainer: {

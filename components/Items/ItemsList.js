@@ -5,6 +5,8 @@ import CatalogueCartItem from './CatalogueCartItem';
 import CartItem from './CartItem';
 import CatalogueItem from './CatalogueItem';
 import TransferItem from './TransferItem';
+import AssetItem from './AssetItem';
+import OutSourcedItem from './OutSourcedItem';
 
 const ItemsList = ({ id, data, component, ...props }) => {
   const simpleRenderer = (item) => {
@@ -21,13 +23,19 @@ const ItemsList = ({ id, data, component, ...props }) => {
       return <CatalogueItem {...item.item} />;
     }
     if (component === 'transfer') {
-      return <TransferItem {...item.item} />;
+      return <TransferItem {...item.item} {...props} />;
+    }
+    if (component === 'assetItem') {
+      return <AssetItem {...item.item} />;
+    }
+    if (component === 'outsourcedItem') {
+      return <OutSourcedItem {...item.item} {...props} />;
     }
   };
 
   return (
     <FlatList
-      style={{ paddingHorizontal: 22 }}
+      style={component !== 'assetItem' && { paddingHorizontal: 22 }}
       data={data}
       renderItem={simpleRenderer}
       keyExtractor={(item) => item[id]}
