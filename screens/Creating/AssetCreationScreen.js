@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,9 +9,18 @@ import {
   Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useMutation } from '@tanstack/react-query';
+import { useFocusEffect } from '@react-navigation/native';
 import { CalendarDaysIcon } from 'react-native-heroicons/solid';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useDispatch } from 'react-redux';
 import useInput from '../../hooks/useInput';
+import { notEmpty, notZero } from '../../features/validations';
+import { storeSupplierAsset } from '../../apis/assets';
+import { AuthContext } from '../../store/auth-context';
+import getLocation from '../../permissions/locator';
+import { resetConstituents } from '../../features/composition/drugCompositionSlice';
+import formatDate from '../../features/dateFormatter';
 
 const getForm = (...inputStates) => {
   const formIsValid = inputStates.reduce(
@@ -29,55 +38,100 @@ const getForm = (...inputStates) => {
 };
 
 const AssetCreationScreen = ({ navigation, route }) => {
+  const { user } = useContext(AuthContext);
+  const dispatch = useDispatch();
   const asset = route.params;
-  const assetType = asset.drug.type === 'drug' ? 'Drug' : 'Raw Material';
 
   const CUR_DATE = new Date();
   const ONE_YEAR_AFTER = new Date(
     new Date().setFullYear(new Date().getFullYear() + 1)
   );
 
-  const [manufacturingDate, setManufacturingDate] = useState(CUR_DATE);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(resetConstituents());
+    }, [dispatch])
+  );
+
+  const [manufacturingDate, setManufacturingDate] = useState(
+    new Date(CUR_DATE)
+  );
   const [manufacturingDatePicker, setManufacturingDatePicker] = useState(false);
 
   const [expiryDatePicker, setExpiryDatePicker] = useState(false);
   const [expiryDate, setExpiryDate] = useState(ONE_YEAR_AFTER);
 
-  const [quantityInputStates, quantityProps] = useInput();
+  const [quantityInputStates, quantityProps] = useInput('', [
+    notEmpty,
+    notZero,
+  ]);
 
   const { formIsValid } = getForm(quantityInputStates);
 
+  const manufacturingDateFormatted = formatDate(manufacturingDate);
+
+  const expiryDateFormatted = formatDate(expiryDate);
+
+  const quantityValue = quantityProps.value;
+
   const moveToAddCompositionPage = () =>
-    navigation.navigate('Add Composition', {
-      ...route.params,
-      manufacturingDate: `${manufacturingDate.getDate()}-${
-        manufacturingDate.getMonth() + 1
-      }-${manufacturingDate.getFullYear()}`,
-      expiryDate: `${expiryDate.getDate()}-${
-        expiryDate.getMonth() + 1
-      }-${expiryDate.getFullYear()}`,
-      quantity: quantityProps.value,
+    navigation.navigate('View Out Sourced Assets', {
+      ...asset,
+      manufacturingDate: manufacturingDateFormatted,
+      expiryDate: expiryDateFormatted,
+      quantity: quantityValue,
     });
 
-  const onManufacturingDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
+  const onManufacturingDateChange = useCallback((event, selectedDate) => {
     setManufacturingDatePicker(false);
-    setManufacturingDate(currentDate);
-  };
+    setManufacturingDate(selectedDate);
+  }, []);
 
   const openManufacturingDatePicker = () => {
     setManufacturingDatePicker(true);
   };
 
-  const onExpiryDateChange = (event, selectedDate) => {
+  const onExpiryDateChange = useCallback((event, selectedDate) => {
     const currentDate = selectedDate;
     setExpiryDatePicker(false);
     setExpiryDate(currentDate);
-  };
+  }, []);
 
   const openExpiryDatePicker = () => {
     setExpiryDatePicker(true);
   };
+
+  const { isLoading, mutate: supplierAssetMutate } = useMutation({
+    mutationFn: storeSupplierAsset,
+    onSuccess: () => console.log('success'),
+  });
+
+  const supplierAssetCreationHandler = async () => {
+    const { latitude, longitude } = await getLocation();
+
+    supplierAssetMutate({
+      id: user.organization._id,
+      code: asset.code,
+      manufacturingDate: manufacturingDateFormatted,
+      expiryDate: expiryDateFormatted,
+      latitude,
+      longitude,
+      quantity: +quantityValue,
+    });
+  };
+
+  let assetType;
+  let submitButtonTitle;
+  let submitButtonOnPressFn;
+  if (asset.drug.type === 'drug') {
+    assetType = 'Drug';
+    submitButtonTitle = 'Add Composition';
+    submitButtonOnPressFn = moveToAddCompositionPage;
+  } else {
+    assetType = 'Raw Material';
+    submitButtonTitle = 'Create Asset';
+    submitButtonOnPressFn = supplierAssetCreationHandler;
+  }
 
   return (
     <SafeAreaView style={styles.root}>
@@ -94,9 +148,7 @@ const AssetCreationScreen = ({ navigation, route }) => {
               style={{ flex: 1 }}
             >
               <View style={[styles.dateInput, styles.input]}>
-                <Text>{`${manufacturingDate.getDate()}-${
-                  manufacturingDate.getMonth() + 1
-                }-${manufacturingDate.getFullYear()}`}</Text>
+                <Text>{manufacturingDateFormatted}</Text>
                 <CalendarDaysIcon size={20} color="black" />
                 {manufacturingDatePicker && (
                   <DateTimePicker
@@ -115,9 +167,7 @@ const AssetCreationScreen = ({ navigation, route }) => {
               style={{ flex: 1 }}
             >
               <View style={[styles.dateInput, styles.input]}>
-                <Text>{`${expiryDate.getDate()}-${
-                  expiryDate.getMonth() + 1
-                }-${expiryDate.getFullYear()}`}</Text>
+                <Text>{expiryDateFormatted}</Text>
                 <CalendarDaysIcon size={20} color="black" />
                 {expiryDatePicker && (
                   <DateTimePicker
@@ -149,8 +199,10 @@ const AssetCreationScreen = ({ navigation, route }) => {
 
         <View style={styles.buttonContainer}>
           <Pressable
-            disabled={!formIsValid}
-            onPress={moveToAddCompositionPage}
+            disabled={
+              !formIsValid || (assetType === 'Raw Material' && isLoading)
+            }
+            onPress={submitButtonOnPressFn}
             style={({ pressed }) => [
               styles.button,
               pressed && styles.pressed,
@@ -162,7 +214,7 @@ const AssetCreationScreen = ({ navigation, route }) => {
                 formIsValid ? styles.buttonTextValid : styles.buttonTextInvalid,
               ]}
             >
-              Preview
+              {submitButtonTitle}
             </Text>
           </Pressable>
         </View>
@@ -238,5 +290,8 @@ const styles = StyleSheet.create({
   },
   buttonTextValid: {
     color: '#FFFFFF',
+  },
+  pressed: {
+    opacity: 0.7,
   },
 });

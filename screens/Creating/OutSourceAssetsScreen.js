@@ -1,21 +1,32 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchInput from '../../components/UI/SearchInput';
 import ItemsList from '../../components/Items/ItemsList';
 import useFilteredData from '../../hooks/useFilteredData';
 import { AuthContext } from '../../store/auth-context';
-import { getUnfulfilledTransfers } from '../../apis/requests';
+import { getOutSourcedAssets } from '../../apis/assets';
 
-const AddCompositionScreen = () => {
+const OutSourceAssetsScreen = ({ navigation, route }) => {
   const { user } = useContext(AuthContext);
 
+  const assetDetails = route.params;
+
   const { filteredData, onChangeText, isLoading } = useFilteredData(
-    ['UnfulfilledTransfers', user.organization._id],
-    () => getUnfulfilledTransfers(user.organization._id),
+    ['OutSourcedAssets', user.organization._id],
+    () => getOutSourcedAssets(user.organization._id),
     'id'
   );
+
+  const onPressPreviewButton = () =>
+    navigation.navigate('Preview Composition', assetDetails);
 
   return (
     <SafeAreaView style={styles.root}>
@@ -26,7 +37,7 @@ const AddCompositionScreen = () => {
         <View>
           <SearchInput
             onChangeText={onChangeText}
-            placeholderText={`Search Catalogue Code: "XYZ-1000"`}
+            placeholderText={`Search Asset ID: "829253b7-c85b-4790-b464"`}
           />
         </View>
       </View>
@@ -39,16 +50,27 @@ const AddCompositionScreen = () => {
         {isLoading ? (
           <ActivityIndicator />
         ) : filteredData.length === 0 ? (
-          <Text>No Items are in the catalogue...</Text>
+          <Text>You have no out-sourced items from other organizations</Text>
         ) : (
-          <ItemsList id="id" data={filteredData} component="transfer" />
+          <ItemsList
+            id="id"
+            data={filteredData}
+            component="outsourcedItem"
+            componentType="composition"
+          />
         )}
       </View>
+      <TouchableOpacity
+        style={styles.confirmButton}
+        onPress={onPressPreviewButton}
+      >
+        <Text style={styles.buttonText}>Preview Constitution</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
-export default AddCompositionScreen;
+export default OutSourceAssetsScreen;
 
 const styles = StyleSheet.create({
   root: {
@@ -79,5 +101,27 @@ const styles = StyleSheet.create({
   loadingOrNoData: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  confirmButton: {
+    position: 'absolute',
+    bottom: 10,
+    marginHorizontal: 32,
+    width: '80%',
+    textAlign: 'center',
+    backgroundColor: '#000000',
+    padding: 10,
+    borderWidth: 0.5,
+    borderColor: '#000000',
+    borderRadius: 100,
+    flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontFamily: 'ibmPlex700',
+    fontSize: 20,
   },
 });
