@@ -19,9 +19,7 @@ const requestOrganizationSlice = createSlice({
       state.organization.id = null;
       state.organization.name = null;
     },
-    resetOrganizationState(state) {
-      state = initialState;
-    },
+    resetOrganizationState: () => initialState,
   },
 });
 

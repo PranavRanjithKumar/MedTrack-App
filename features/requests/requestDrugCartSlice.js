@@ -15,33 +15,28 @@ const requestDrugCartSlice = createSlice({
       const existingItem = state.items.find(
         (item) => item.catalogueId === newItem.code
       );
-      state.totalQuantity += 1;
       if (!existingItem) {
         state.items.push({
           name: newItem.name,
           unitQuantity: newItem.unitQuantity,
           unitQuantityType: newItem.unitQuantityType,
           catalogueId: newItem.code,
-          quantity: 1,
+          quantity: newItem.quantity,
           quantityType: 'units',
         });
+        state.totalQuantity += newItem.quantity;
       } else {
-        existingItem.quantity += 1;
+        state.totalQuantity += newItem.quantity - existingItem.quantity;
+        existingItem.quantity = newItem.quantity;
       }
     },
     removeFromBasket: (state, action) => {
       const id = action.payload;
       const existingItem = state.items.find((item) => item.catalogueId === id);
-      state.totalQuantity -= 1;
-      if (existingItem.quantity === 1) {
-        state.items = state.items.filter((item) => item.catalogueId !== id);
-      } else {
-        existingItem.quantity -= 1;
-      }
+      state.totalQuantity -= existingItem.quantity;
+      state.items = state.items.filter((item) => item.catalogueId !== id);
     },
-    resetBasketState: (state) => {
-      state = initialState;
-    },
+    resetBasketState: () => initialState,
   },
 });
 
