@@ -12,6 +12,7 @@ import useInput from '../../hooks/useInput';
 import login from '../../apis/auth';
 import { AuthContext } from '../../store/auth-context';
 import ErrorToast from '../../components/UI/errorToast';
+import { notEmpty } from '../../features/validations';
 
 const getForm = (...inputStates) => {
   const formIsValid = inputStates.reduce(
@@ -30,8 +31,8 @@ const getForm = (...inputStates) => {
 
 const LoginScreen = () => {
   const { authenticate } = useContext(AuthContext);
-  const [emailInputStates, emailProps] = useInput();
-  const [passwordInputStates, passwordProps] = useInput();
+  const [emailInputStates, emailProps] = useInput('', [notEmpty]);
+  const [passwordInputStates, passwordProps] = useInput('', [notEmpty]);
   const [errorVisibility, setErrorVisibility] = useState(true);
 
   const { formIsValid, formReset } = getForm(
