@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 /* eslint-disable no-nested-ternary */
 import {
   StyleSheet,
@@ -67,7 +68,7 @@ const RequestDrugsScreen = ({ navigation, route }) => {
       </View>
       <View
         style={[
-          styles.catalogueList,
+          styles.list,
           (isLoading || filteredData.length === 0) && styles.loadingOrNoData,
         ]}
       >
@@ -95,7 +96,7 @@ const RequestDrugsScreen = ({ navigation, route }) => {
       {errorVisibility && (
         <ErrorToast
           onPress={() => setErrorVisibility(false)}
-          message="You can only make request from one organization at a time. Clear the cart items to make a new request."
+          message="Clear the cart items of other organization to make a new request."
         />
       )}
     </SafeAreaView>
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
   goBackButton: {
     paddingRight: 12,
   },
-  catalogueList: {
+  list: {
     flex: 1,
     backgroundColor: 'white',
   },

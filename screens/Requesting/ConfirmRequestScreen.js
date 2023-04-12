@@ -1,30 +1,59 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
-import * as Location from 'expo-location';
+import { useMutation } from '@tanstack/react-query';
+import { useSelector, useDispatch } from 'react-redux';
 import GoBackButton from '../../components/UI/GoBackButton';
 import ItemsList from '../../components/Items/ItemsList';
-import { selectBasketItems } from '../../features/requests/requestDrugCartSlice';
+import {
+  selectBasketItems,
+  resetBasketState,
+} from '../../features/requests/requestDrugCartSlice';
+import { AuthContext } from '../../store/auth-context';
+import getLocation from '../../permissions/locator';
+import { placeRequest } from '../../apis/requests';
+import {
+  selectOrganization,
+  resetOrganizationState,
+} from '../../features/requests/requestOrganizationSlice';
 
-const getLocation = async () => {
-  const { status } = await Location.requestForegroundPermissionsAsync();
-  if (status !== 'granted') {
-    console.log('Permission to access location was denied');
-    return;
-  }
-  const location = await Location.getCurrentPositionAsync({ accuracy: 5 });
-  console.log(location);
-};
+const ConfirmRequestScreen = ({ navigation }) => {
+  const { user } = useContext(AuthContext);
 
-const ConfirmRequestScreen = () => {
   const items = useSelector(selectBasketItems);
+  const dispatch = useDispatch();
+  const transferringOrganization = useSelector(selectOrganization);
+
+  const { isLoading, mutate: placeRequestMutate } = useMutation({
+    mutationFn: placeRequest,
+    onSuccess: () => {
+      dispatch(resetBasketState());
+      dispatch(resetOrganizationState());
+      navigation.navigate('RequestableOrganizations');
+    },
+  });
+
+  const placeRequestHandler = async () => {
+    const { latitude, longitude } = await getLocation();
+    placeRequestMutate({
+      id: user.organization._id,
+      transferringOrgId: transferringOrganization.id,
+      latitude,
+      longitude,
+      requestedItems: items,
+    });
+  };
+
   return (
     <SafeAreaView style={styles.root}>
       <GoBackButton custom={styles.goBackButton} />
       <Text style={styles.headline}>Confirm Request</Text>
       <ItemsList id="catalogueId" data={items} component="cartItem" />
-      <TouchableOpacity style={styles.confirmButton} onPress={getLocation}>
+      <TouchableOpacity
+        disabled={isLoading}
+        style={styles.confirmButton}
+        onPress={placeRequestHandler}
+      >
         <Text style={styles.buttonText}>Place Request</Text>
       </TouchableOpacity>
     </SafeAreaView>
