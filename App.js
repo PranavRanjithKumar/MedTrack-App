@@ -1,5 +1,6 @@
 /* eslint-disable global-require */
 import React, { useCallback, useContext, useState, useEffect } from 'react';
+import { Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -13,12 +14,30 @@ import LoginScreen from './screens/auth/LoginScreen';
 import RequestableOrganizationsScreen from './screens/Requesting/RequestableOrganizationsScreen';
 import AuthContextProvider, { AuthContext } from './store/auth-context';
 import WithAxios from './apis/withAxios';
-import RequestDrugsScreen from './screens/Requesting/RequestDrugsScreen';
 import store from './store/redux-store';
+import RequestDrugsScreen from './screens/Requesting/RequestDrugsScreen';
 import ConfirmRequestScreen from './screens/Requesting/ConfirmRequestScreen';
 import MyCatalogueScreen from './screens/Creating/MyCatalogueScreen';
 import AssetCreationScreen from './screens/Creating/AssetCreationScreen';
-import AddCompositionScreen from './screens/Creating/AddCompositionScreen';
+import OutSourceAssetsScreen from './screens/Creating/OutSourceAssetsScreen';
+import CompositionQuantityFormScreen from './screens/Creating/CompositionQuantityFormScreen';
+import RequestQuantityFormScreen from './screens/Requesting/RequestQuantityFormScreen';
+import UnFulfilledTransfersScreen from './screens/Transferring/UnFulfilledTransfersScreen';
+import InHouseAssetsScreen from './screens/Transferring/InHouseAssetsScreen';
+import RequestedItemsScreen from './screens/Transferring/RequestedItemsScreen';
+import PreviewTransferItemsScreen from './screens/Transferring/PreviewTransferItemsScreen';
+import ConstitutionPreviewScreen from './screens/Creating/ConstitutionPreviewScreen';
+import ImportedItemsScreen from './screens/Info/ImportedItemsScreen';
+import InventoryScreen from './screens/Info/InventoryScreen';
+import ViewQRScreen from './screens/Info/ViewQRScreen';
+import AssetHistoryFormScreen from './screens/Info/AssetHistoryFormScreen';
+import BarcodeScannerScreen from './screens/Info/BarcodeScannerScreen';
+import AssetInfoScreen from './screens/Info/AssetInfoScreen';
+import RequestsScreen from './screens/Info/RequestsScreen';
+import RequestInfoScreen from './screens/Info/RequestInfoScreen';
+import ProfileScreen from './screens/Info/ProfileScreen';
+import TransfersScreen from './screens/Info/TransfersScreen';
+import MapViewScreen from './screens/Info/MapViewScreen';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -59,6 +78,11 @@ const RequestStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="Add request quantity"
+        component={RequestQuantityFormScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="ConfirmRequest"
         component={ConfirmRequestScreen}
         options={{ headerShown: false }}
@@ -87,8 +111,170 @@ const CreateStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Add Composition"
-        component={AddCompositionScreen}
+        name="View Out Sourced Assets"
+        component={OutSourceAssetsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Add Composition Quantity"
+        component={CompositionQuantityFormScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Preview Composition"
+        component={ConstitutionPreviewScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Scan QR"
+        component={AssetHistoryFormScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Scanner"
+        component={BarcodeScannerScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="View QR"
+        component={ViewQRScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Asset Info"
+        component={AssetInfoScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Map View"
+        component={MapViewScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const TransferStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        contentStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+      }}
+    >
+      <Stack.Screen
+        name="UnFulfilled Transfers"
+        component={UnFulfilledTransfersScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Requested Items"
+        component={RequestedItemsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="View In House Assets"
+        component={InHouseAssetsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Preview Transferring Items"
+        component={PreviewTransferItemsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Scan QR"
+        component={AssetHistoryFormScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Scanner"
+        component={BarcodeScannerScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="View QR"
+        component={ViewQRScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Asset Info"
+        component={AssetInfoScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Map View"
+        component={MapViewScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const InfoStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        contentStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+      }}
+    >
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Requests"
+        component={RequestsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Transfers"
+        component={TransfersScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Request Info"
+        component={RequestInfoScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="History Form"
+        component={AssetHistoryFormScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Inventory Stock"
+        component={InventoryScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Asset Info"
+        component={AssetInfoScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Scanner"
+        component={BarcodeScannerScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="View QR"
+        component={ViewQRScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Map View"
+        component={MapViewScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Imported Items"
+        component={ImportedItemsScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
@@ -114,35 +300,87 @@ const AuthStack = () => {
 };
 
 const AuthenticatedStack = () => {
+  const { user } = useContext(AuthContext);
+
   return (
     <Bottom.Navigator
       screenOptions={{
-        contentStyle: {
-          backgroundColor: '#FFFFFF',
-        },
         tabBarHideOnKeyboard: true,
       }}
     >
+      {(user.organization.type === 'supplier' ||
+        user.organization.type === 'manufacturer') && (
+        <Bottom.Screen
+          name="Lab"
+          component={CreateStack}
+          options={{
+            headerShown: false,
+            tabBarLabelStyle: {
+              fontSize: 14,
+              fontFamily: 'roboto500',
+            },
+            tabBarIcon: ({ color, size }) => (
+              <Image
+                source={require('./assets/lab.png')}
+                style={{ width: 26, height: 26, tintColor: color }}
+              />
+            ),
+          }}
+        />
+      )}
+      {user.organization.type !== 'supplier' && (
+        <Bottom.Screen
+          name="Request"
+          component={RequestStack}
+          options={{
+            headerShown: false,
+            tabBarLabelStyle: {
+              fontSize: 14,
+              fontFamily: 'roboto500',
+            },
+            tabBarIcon: ({ color, size }) => (
+              <Image
+                source={require('./assets/cart.png')}
+                style={{ width: 26, height: 26, tintColor: color }}
+              />
+            ),
+          }}
+        />
+      )}
+      {user.organization.type !== 'retailer' && (
+        <Bottom.Screen
+          name="Transfer"
+          component={TransferStack}
+          options={{
+            headerShown: false,
+            tabBarLabelStyle: {
+              fontSize: 14,
+              fontFamily: 'roboto500',
+            },
+            tabBarIcon: ({ color, size }) => (
+              <Image
+                source={require('./assets/partner_exchange.png')}
+                style={{ width: 26, height: 26, tintColor: color }}
+              />
+            ),
+          }}
+        />
+      )}
       <Bottom.Screen
-        name="Requests"
-        component={RequestStack}
+        name="Info"
+        component={InfoStack}
         options={{
           headerShown: false,
           tabBarLabelStyle: {
             fontSize: 14,
             fontFamily: 'roboto500',
           },
-        }}
-      />
-      <Bottom.Screen
-        name="Assets"
-        component={CreateStack}
-        options={{
-          headerShown: false,
-          tabBarLabelStyle: {
-            fontSize: 14,
-            fontFamily: 'roboto500',
-          },
+          tabBarIcon: ({ color, size }) => (
+            <Image
+              source={require('./assets/menu.png')}
+              style={{ width: 26, height: 26, tintColor: color }}
+            />
+          ),
         }}
       />
     </Bottom.Navigator>
