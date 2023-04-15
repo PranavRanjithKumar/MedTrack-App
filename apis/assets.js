@@ -105,7 +105,7 @@ export const storeManufcturerAsset = async ({
 export const fetchAssetProvenance = async ({ orgId, assetId }) => {
   try {
     const response = await axiosClient.post(
-      `/organizations/${orgId}/provenance`,
+      `/organizations/${orgId}/assets/provenance`,
       JSON.stringify({ id: assetId })
     );
     return response.data;
