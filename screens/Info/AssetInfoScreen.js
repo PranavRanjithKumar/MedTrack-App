@@ -11,7 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import React, { useContext, useCallback } from 'react';
 import { AuthContext } from '../../store/auth-context';
-import { getAssetDetails } from '../../apis/assets';
+import { fetchAssetProvenance, getAssetDetails } from '../../apis/assets';
 import QRButton from '../../components/UI/QRButton';
 
 const CompositionItem = ({ drug, assets }) => {
@@ -44,10 +44,22 @@ const AssetInfoScreen = ({ navigation, route }) => {
   const { user } = useContext(AuthContext);
   const assetId = route.params;
 
-  const { isLoading, data } = useQuery(
+  const { isLoading: isInfoLoading, data } = useQuery(
     ['asset info', user.organization._id, assetId],
     () =>
       getAssetDetails({
+        orgId: user.organization._id,
+        assetId,
+      }),
+    {
+      refetchOnWindowFocus: true,
+    }
+  );
+
+  const { isLoading: isHistoryLoading, data: historyData } = useQuery(
+    ['asset provenance', user.organization._id, assetId],
+    () =>
+      fetchAssetProvenance({
         orgId: user.organization._id,
         assetId,
       }),
@@ -107,7 +119,7 @@ const AssetInfoScreen = ({ navigation, route }) => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Asset Details</Text>
       </View>
-      {isLoading ? (
+      {isInfoLoading || isHistoryLoading ? (
         <View style={[styles.container, styles.loadingOrNoData]}>
           <ActivityIndicator />
         </View>
@@ -226,7 +238,7 @@ const AssetInfoScreen = ({ navigation, route }) => {
           )}
           <View style={{ marginBottom: 50, alignSelf: 'center' }}>
             <Button
-              onPress={() => navigation.navigate('Map View')}
+              onPress={() => navigation.navigate('Map View', historyData)}
               color="#000"
               title="Trace Provenance"
             />
