@@ -328,25 +328,25 @@ const AuthenticatedStack = () => {
           }}
         />
       )}
-      {user.organization.type !== 'supplier' && (
-        <Bottom.Screen
-          name="Request"
-          component={RequestStack}
-          options={{
-            headerShown: false,
-            tabBarLabelStyle: {
-              fontSize: 14,
-              fontFamily: 'roboto500',
-            },
-            tabBarIcon: ({ color, size }) => (
-              <Image
-                source={require('./assets/cart.png')}
-                style={{ width: 26, height: 26, tintColor: color }}
-              />
-            ),
-          }}
-        />
-      )}
+      {/* {user.organization.type !== 'supplier' && ( */}
+      <Bottom.Screen
+        name="Request"
+        component={RequestStack}
+        options={{
+          headerShown: false,
+          tabBarLabelStyle: {
+            fontSize: 14,
+            fontFamily: 'roboto500',
+          },
+          tabBarIcon: ({ color, size }) => (
+            <Image
+              source={require('./assets/cart.png')}
+              style={{ width: 26, height: 26, tintColor: color }}
+            />
+          ),
+        }}
+      />
+      {/* )} */}
       {user.organization.type !== 'retailer' && (
         <Bottom.Screen
           name="Transfer"
